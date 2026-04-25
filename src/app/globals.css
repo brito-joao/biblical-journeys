@@ -1,26 +1,118 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f0e8d5;
+  --foreground: #2c2015;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), sans-serif;
+  --font-serif: var(--font-merriweather), serif;
+
+  --color-parchment: #f0e8d5;
+  --color-parchment-mid: #e8dcc0;
+  --color-parchment-dark: #d6c8a8;
+  --color-leather: #8b6914;
+  --color-leather-dark: #5c4310;
+  --color-ink: #2c2015;
+  --color-ink-mid: #4a3520;
+  --color-ink-light: #6b4c28;
+  --color-gold: #c4952a;
+  --color-gold-light: #e0b84a;
+  --color-gold-dim: #9a7518;
+  --color-crimson: #7a1e18;
+  --color-crimson-dark: #5c1612;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── Deep aged paper body ─────────────────────────────────────── */
 body {
-  background: var(--background);
+  background-color: #1a1208;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
 }
+
+/* ── Parchment surface — aged with noise + vignette ─────────── */
+.parchment-surface {
+  background-color: var(--color-parchment);
+  background-image:
+    /* random grain noise */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E"),
+    /* horizontal aging lines */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 28px,
+      rgba(139,105,20,0.04) 28px,
+      rgba(139,105,20,0.04) 29px
+    );
+}
+
+/* ── Rope border helper ─────────────────────────────────────── */
+.rope-border {
+  border: 3px solid transparent;
+  border-image: repeating-linear-gradient(
+    90deg,
+    #9a7518 0px,
+    #c4952a 4px,
+    #6b4c28 8px,
+    #9a7518 12px
+  ) 3;
+}
+
+/* ── Lantern glow card shadow ───────────────────────────────── */
+.lantern-glow {
+  box-shadow:
+    0 0 0 1px rgba(196,149,42,0.4),
+    0 4px 8px rgba(44,32,21,0.3),
+    0 12px 32px rgba(44,32,21,0.25),
+    inset 0 1px 0 rgba(224,184,74,0.15),
+    inset 0 -1px 0 rgba(44,32,21,0.2);
+}
+
+/* ── Ink-stamp badge ─────────────────────────────────────────── */
+.ink-badge {
+  background: var(--color-ink);
+  color: var(--color-parchment);
+  font-family: var(--font-serif);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  clip-path: polygon(5px 0%,calc(100% - 5px) 0%,100% 50%,calc(100% - 5px) 100%,5px 100%,0% 50%);
+}
+
+/* ── Corner ornament glyphs (use ::before / ::after) ────────── */
+.explorer-card::before {
+  content: '✦';
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 10px;
+  color: rgba(196,149,42,0.5);
+  pointer-events: none;
+}
+.explorer-card::after {
+  content: '✦';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 10px;
+  color: rgba(196,149,42,0.5);
+  pointer-events: none;
+}
+
+/* ── Scroll reveal animation ─────────────────────────────────── */
+@keyframes unfurl {
+  from { opacity: 0; transform: translateY(6px) scaleY(0.97); }
+  to   { opacity: 1; transform: translateY(0)  scaleY(1); }
+}
+.unfurl { animation: unfurl 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ── Pulse glow for active marker ────────────────────────────── */
+@keyframes lanternPulse {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(196,149,42,0.6); }
+  50%       { box-shadow: 0 0 0 8px rgba(196,149,42,0); }
+}
+.lantern-pulse { animation: lanternPulse 2s ease-in-out infinite; }
+
