@@ -14,8 +14,8 @@ export default function Home() {
       </div>
 
       {/* Journey selector — fixed at top center */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex justify-center pt-2 md:pt-6 px-1 pointer-events-none">
-        <div className="pointer-events-auto max-w-full overflow-x-auto no-scrollbar">
+      <div className="absolute top-0 left-0 right-0 z-30 flex justify-center pt-2 md:pt-6 px-2 md:px-0 pointer-events-none w-full">
+        <div className="pointer-events-auto w-full max-w-xl">
           <JourneySelector />
         </div>
       </div>

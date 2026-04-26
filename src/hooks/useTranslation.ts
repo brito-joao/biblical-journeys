@@ -8,11 +8,12 @@ interface TranslationOption {
 }
 
 const TRANSLATIONS: TranslationOption[] = [
-    { id: "kjv", name: "KJV" },
-    { id: "web", name: "WEB" },
-    { id: "asv", name: "ASV" },
-    { id: "darby", name: "Darby" },
-    { id: "ylt", name: "YLT" },
+    { id: "kjv", name: "KJV (EN)" },
+    { id: "web", name: "WEB (EN)" },
+    { id: "almeida", name: "Almeida (PT)" },
+    { id: "asv", name: "ASV (EN)" },
+    { id: "darby", name: "Darby (EN)" },
+    { id: "ylt", name: "YLT (EN)" },
 ];
 
 const TRANSLATION_KEY = "bible_map_translation";

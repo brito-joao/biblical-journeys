@@ -1,11 +1,13 @@
 import { useEffect, MutableRefObject, useRef } from "react";
 import { GlobeMethods } from "react-globe.gl";
 import { TimelineEvent } from "@/types";
+import { getEventCoordinates } from "@/utils/coordinates";
 
 export function useCalculateDynamicGlobeCameraZoom(
     globeRef: MutableRefObject<GlobeMethods | undefined>,
     activeEvent: TimelineEvent | null,
-    timelineData: TimelineEvent[]
+    timelineData: TimelineEvent[],
+    mapStyle: string
 ) {
     const previousJourneyRef = useRef<number | null>(null);
 
@@ -20,8 +22,8 @@ export function useCalculateDynamicGlobeCameraZoom(
             
             // Recompute boundary clamps only if the user jumped strictly to a new journey!
             if (isNewJourney) {
-                const lats = timelineData.map(d => d.lat).sort((a, b) => a - b);
-                const lngs = timelineData.map(d => d.lng).sort((a, b) => a - b);
+                const lats = timelineData.map(d => getEventCoordinates(d, mapStyle).lat).sort((a, b) => a - b);
+                const lngs = timelineData.map(d => getEventCoordinates(d, mapStyle).lng).sort((a, b) => a - b);
                 
                 const q1Lat = lats[Math.floor(lats.length * 0.1)];
                 const q9Lat = lats[Math.floor(lats.length * 0.9)];
@@ -40,8 +42,8 @@ export function useCalculateDynamicGlobeCameraZoom(
             // Move camera safely towards current active step targeting fixed zoom!
             setTimeout(() => {
                 globeRef.current?.pointOfView({
-                    lat: activeEvent.lat,
-                    lng: activeEvent.lng,
+                    lat: getEventCoordinates(activeEvent, mapStyle).lat,
+                    lng: getEventCoordinates(activeEvent, mapStyle).lng,
                     altitude: targetAltitude
                 }, 1200);
             }, 100);

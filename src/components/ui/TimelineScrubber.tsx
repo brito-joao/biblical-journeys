@@ -2,6 +2,8 @@
 
 import { useTimeline } from "@/context/TimelineContext";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
+import { tData } from "@/lib/i18n";
 import { useRef, useEffect } from "react";
 
 interface TimelineScrubberProps {
@@ -9,7 +11,8 @@ interface TimelineScrubberProps {
 }
 
 export default function TimelineScrubber({ className }: TimelineScrubberProps) {
-    const { activeEventIndex, setActiveEventIndex, timelineData } = useTimeline();
+    const { timelineData, activeEventIndex, setActiveEventIndex } = useTimeline();
+    const { language } = useLanguage();
     const scrollRef = useRef<HTMLDivElement>(null);
     const activeRef = useRef<HTMLDivElement>(null);
 
@@ -88,8 +91,9 @@ export default function TimelineScrubber({ className }: TimelineScrubberProps) {
                         const isActive = index === activeEventIndex;
                         const isPast = index < activeEventIndex;
                         
-                        // Clean up the year string to fit better
-                        const displayYear = stop.year.replace('c. ', '');
+                        // Use tData to extract string from LocalizedString, then remove "c. "
+                        const rawYear = tData(stop.year, language);
+                        const displayYear = rawYear.replace('c. ', '');
 
                         return (
                             <div

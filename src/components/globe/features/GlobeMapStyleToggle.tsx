@@ -1,5 +1,9 @@
 "use client";
 
+import { useLanguage } from "@/hooks/useLanguage";
+import { tData } from "@/lib/i18n";
+import { LocalizedString } from "@/types";
+
 type MapStyle = 'parchment' | 'satellite' | 'topo';
 
 interface GlobeMapStyleToggleProps {
@@ -7,10 +11,10 @@ interface GlobeMapStyleToggleProps {
     onChange: (style: MapStyle) => void;
 }
 
-const styles: { id: MapStyle; label: string; glyph: string }[] = [
-    { id: 'parchment', label: 'Antique', glyph: '🗺' },
-    { id: 'satellite', label: 'Satellite', glyph: '🛰' },
-    { id: 'topo', label: 'Terrain', glyph: '⛰' },
+const styles: { id: MapStyle; label: LocalizedString; glyph: string; textureUrl?: string }[] = [
+    { id: 'parchment', label: { en: 'Antique', pt: 'Antigo' }, glyph: '🗺' },
+    { id: 'satellite', label: { en: 'Satellite', pt: 'Satélite' }, glyph: '🛰' },
+    { id: 'topo', label: { en: 'Terrain', pt: 'Terreno' }, glyph: '⛰' },
 ];
 
 const sharedBtnStyle = (isActive: boolean, i: number, axis: 'x' | 'y') => ({
@@ -29,6 +33,8 @@ const sharedBtnStyle = (isActive: boolean, i: number, axis: 'x' | 'y') => ({
 });
 
 export default function GlobeMapStyleToggle({ value, onChange }: GlobeMapStyleToggleProps) {
+    const { language } = useLanguage();
+
     return (
         <>
             {/* Mobile: compact horizontal strip at top-right */}
@@ -44,11 +50,11 @@ export default function GlobeMapStyleToggle({ value, onChange }: GlobeMapStyleTo
                     <button
                         key={s.id}
                         onClick={() => onChange(s.id)}
-                        title={s.label}
+                        title={typeof s.label === 'string' ? s.label : s.label[language] || s.label.en}
                         style={sharedBtnStyle(value === s.id, i, 'x')}
                     >
                         <span style={{ fontSize: '13px', lineHeight: 1 }}>{s.glyph}</span>
-                        <span>{s.label}</span>
+                        <span>{tData(s.label, language)}</span>
                     </button>
                 ))}
             </div>
@@ -66,11 +72,11 @@ export default function GlobeMapStyleToggle({ value, onChange }: GlobeMapStyleTo
                     <button
                         key={s.id}
                         onClick={() => onChange(s.id)}
-                        title={s.label}
+                        title={typeof s.label === 'string' ? s.label : s.label[language] || s.label.en}
                         style={sharedBtnStyle(value === s.id, i, 'y')}
                     >
                         <span style={{ fontSize: '14px', lineHeight: 1 }}>{s.glyph}</span>
-                        <span>{s.label}</span>
+                        <span>{tData(s.label, language)}</span>
                         {value === s.id && (
                             <span style={{ marginLeft: 'auto', color: '#c4952a', fontSize: '8px' }}>✦</span>
                         )}
@@ -82,6 +88,15 @@ export default function GlobeMapStyleToggle({ value, onChange }: GlobeMapStyleTo
 }
 
 export type { MapStyle };
+
+export function getGlobeImageUrl(style: MapStyle, customTextureUrl?: string): string | undefined {
+    if (style === 'parchment' && customTextureUrl) {
+        return customTextureUrl;
+    }
+    const s = styles.find(s => s.id === style);
+    return s?.textureUrl;
+}
+
 export function getTileUrl(style: MapStyle): (x: number, y: number, level: number) => string {
     switch (style) {
         case 'satellite':

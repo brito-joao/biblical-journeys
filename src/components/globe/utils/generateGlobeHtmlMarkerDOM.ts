@@ -1,15 +1,20 @@
+import { Language } from "@/lib/i18n";
 import { TimelineEvent } from "@/types";
 
 export function generateGlobeHtmlMarkerDOM(
     eventData: object,
     activeEventOrderId: number,
-    onMarkerClicked: (event: TimelineEvent) => void
+    onMarkerClicked: (event: TimelineEvent) => void,
+    language: Language
 ): HTMLElement {
     const containerElement = document.createElement('div');
     const timelineEvent = eventData as TimelineEvent;
     const isCurrentlyActive = timelineEvent.order === activeEventOrderId;
     
     containerElement.setAttribute('data-order', timelineEvent.order.toString());
+
+    const textColor = isCurrentlyActive ? '#8b251e' : '#3e3222';
+    const textShadow = '0 1px 3px rgba(248,245,238,0.9), 0 -1px 3px rgba(248,245,238,0.9), 1px 0 3px rgba(248,245,238,0.9), -1px 0 3px rgba(248,245,238,0.9)';
 
     containerElement.innerHTML = `
         <style>
@@ -44,11 +49,26 @@ export function generateGlobeHtmlMarkerDOM(
                 font-size: ${isCurrentlyActive ? '20px' : '15px'};
                 font-weight: ${isCurrentlyActive ? '800' : '700'};
                 letter-spacing: 0.05em;
-                color: ${isCurrentlyActive ? '#8b251e' : '#3e3222'};
-                text-shadow: 0 1px 3px rgba(248,245,238,0.9), 0 -1px 3px rgba(248,245,238,0.9), 1px 0 3px rgba(248,245,238,0.9), -1px 0 3px rgba(248,245,238,0.9);
+                color: ${textColor};
+                text-shadow: ${textShadow};
                 white-space: nowrap;
             ">
-                ${timelineEvent.city}
+                <div style="
+                margin-top: 4px;
+                font-family: var(--font-merriweather, serif);
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: ${textColor};
+                text-shadow: ${textShadow};
+                white-space: nowrap;
+                transition: opacity 0.3s ease;
+                pointer-events: auto;
+                cursor: pointer;
+            ">
+                ${typeof timelineEvent.city === 'string' ? timelineEvent.city : (timelineEvent.city[language] || timelineEvent.city.en)}
+            </div>
             </span>
         </div>
     `;

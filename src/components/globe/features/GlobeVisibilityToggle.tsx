@@ -1,14 +1,19 @@
+import { useLanguage } from "@/hooks/useLanguage";
+import { t } from "@/lib/i18n";
+
 interface GlobeVisibilityToggleProps {
     showAll: boolean;
     onChange: (showAll: boolean) => void;
 }
 
 export default function GlobeVisibilityToggle({ showAll, onChange }: GlobeVisibilityToggleProps) {
+    const { language } = useLanguage();
+    
     return (
         <div className="absolute top-14 right-2 md:top-auto md:bottom-[92px] md:right-6 z-20">
             <button
                 onClick={() => onChange(!showAll)}
-                title={showAll ? "Hide Future Cities" : "Show All Cities"}
+                title={showAll ? t('hideFutureCities', language) : t('showAllCities', language)}
                 style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -44,7 +49,7 @@ export default function GlobeVisibilityToggle({ showAll, onChange }: GlobeVisibi
                     color: showAll ? '#e0b84a' : '#6b4c28',
                     fontFamily: 'var(--font-merriweather, serif)',
                 }}>
-                    {showAll ? "All Cities" : "Active Only"}
+                    {showAll ? t('allCities', language) : t('activeOnly', language)}
                 </span>
             </button>
         </div>
